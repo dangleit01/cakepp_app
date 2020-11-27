@@ -1,0 +1,29 @@
+FROM php:7.2-fpm
+RUN docker-php-ext-install pdo_mysql
+RUN apt-get -y update \
+&& apt-get install -y libicu-dev \
+      libpq-dev \
+      libmcrypt-dev \
+      libzip-dev \
+      zip \
+      unzip \
+&& docker-php-ext-configure intl \
+&& docker-php-ext-configure zip --with-libzip \
+&& docker-php-ext-install intl \
+      mbstring \
+      pcntl \
+      pdo_mysql \
+      pdo_pgsql \
+      pgsql \
+      zip \
+      opcache
+
+
+# Add the composer.json
+COPY composer.json /var/www/html/composer.json
+
+#install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
+
+# install all PHP dependencies
+RUN composer install --no-interaction

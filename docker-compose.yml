@@ -1,0 +1,57 @@
+
+cakephp-app-data:
+  image: php:7.2-fpm
+  container_name: cakephp-app-data-container
+  volumes:
+    - ./:/var/www/html/
+  command: "true"
+
+nginx:
+  build: ./nginx/
+  container_name: cakephp-app-nginx-container
+  ports:
+    - 80:80
+  links:
+    - php
+  volumes_from:
+    - cakephp-app-data
+
+php:
+  build: ./php/
+  container_name: cakephp-app-php-container
+  expose:
+    - 9000
+  links:
+    - mysql
+  volumes_from:
+    - cakephp-app-data
+
+
+mysql:
+  image: mysql:latest
+  command: --default-authentication-plugin=mysql_native_password
+  container_name: cakephp-app-mysql-container
+  volumes_from:
+    - cakephp-app-mysql-data
+  environment:
+    MYSQL_ROOT_PASSWORD: secret
+    MYSQL_DATABASE: cakephp_app_db
+    MYSQL_USER: user
+    MYSQL_PASSWORD: password
+
+cakephp-app-mysql-data:
+  image: mysql:latest
+  container_name: cakephp-app-mysql-data-container
+  volumes:
+    - /var/lib/mysql
+  command: "true"
+
+phpmyadmin:
+  image: phpmyadmin/phpmyadmin
+  container_name: phpmyadmin-container
+  ports:
+    - 8080:80
+  links:
+    - mysql
+  environment:
+    PMA_HOST: mysql
