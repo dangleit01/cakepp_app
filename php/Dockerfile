@@ -17,3 +17,15 @@ RUN apt-get -y update \
       pgsql \
       zip \
       opcache
+
+# Install xdebug
+RUN pecl install xdebug-2.6.1 && docker-php-ext-enable xdebug
+
+RUN echo 'zend_extension = xdebug.so' >> /usr/local/etc/php/php.ini
+RUN echo 'xdebug.remote_enable = 1' >> /usr/local/etc/php/php.ini
+RUN echo 'xdebug.remote_connect_back = 0' >> /usr/local/etc/php/php.ini
+RUN echo 'xdebug.remote_host = docker.for.mac.localhost' >> /usr/local/etc/php/php.ini
+RUN echo 'xdebug.remote_port = 9000' >> /usr/local/etc/php/php.ini
+RUN echo 'xdebug.remote_handler = dbgp' >> /usr/local/etc/php/php.ini
+RUN echo 'xdebug.remote_mode = req' >> /usr/local/etc/php/php.ini
+RUN echo 'xdebug.remote_autostart = 1' >> /usr/local/etc/php/php.ini

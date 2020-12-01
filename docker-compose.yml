@@ -48,7 +48,7 @@ cakephp-app-mysql-data:
 
 phpmyadmin:
   image: phpmyadmin/phpmyadmin
-  container_name: phpmyadmin-container
+  container_name: cakephp-phpmyadmin-container
   ports:
     - 8080:80
   links:
